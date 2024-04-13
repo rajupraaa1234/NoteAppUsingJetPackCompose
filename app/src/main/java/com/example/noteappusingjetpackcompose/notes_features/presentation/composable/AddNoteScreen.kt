@@ -1,7 +1,7 @@
 package com.example.noteappusingjetpackcompose.notes_features.presentation.composable
 
-import android.nfc.Tag
-import android.util.Log
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,12 +15,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.intelligencenoteapp.notes_features.data.domain.model.InvalidNoteException
+import com.example.noteappusingjetpackcompose.R
 import com.example.noteappusingjetpackcompose.notes_features.presentation.State.NoteState
 import com.example.noteappusingjetpackcompose.notes_features.presentation.utils.NoteEvent
 
@@ -29,22 +31,15 @@ import com.example.noteappusingjetpackcompose.notes_features.presentation.utils.
 fun AddNoteScreen(
     state: NoteState,
     navController: NavController,
-    onEvent: (NoteEvent) -> Unit
+    onEvent: (NoteEvent) -> Unit,
+    context: Context
 ) {
-    val TAG : String = "AddNoteScreen"
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                onEvent(
-                    NoteEvent.SaveNote(
-                        title = state.title.value,
-                        content = state.content.value
-                    )
-                )
-                Log.d(TAG, "AddNoteScreen: ${state.title.value}    ${state.content.value}")
-                navController.popBackStack()
+                onSubmitButtonClick(navController,onEvent,state,context)
             }) {
-                Icon(imageVector = Icons.Rounded.Check, contentDescription = "")
+                Icon(imageVector = Icons.Rounded.Check, contentDescription = null)
             }
         }
     ) {
@@ -60,7 +55,7 @@ fun AddNoteScreen(
                     .fillMaxWidth()
                     .padding(16.dp),
                 placeholder = {
-                    Text(text = "Title")
+                    Text(text = stringResource(id = R.string.title))
                 },
                 textStyle = TextStyle(
                     fontWeight = FontWeight.SemiBold,
@@ -75,7 +70,7 @@ fun AddNoteScreen(
                     .fillMaxWidth()
                     .padding(16.dp),
                 placeholder = {
-                    Text(text = "Description")
+                    Text(text = stringResource(id = R.string.description))
                 },
                 textStyle = TextStyle(
                     fontWeight = FontWeight.SemiBold,
@@ -83,6 +78,33 @@ fun AddNoteScreen(
                 )
             )
         }
+    }
+
+}
+
+fun onSubmitButtonClick(
+    navController: NavController,
+    onEvent: (NoteEvent) -> Unit,
+    state: NoteState,
+    context: Context
+) {
+    try{
+        if (state.title.value.isBlank()){
+            throw InvalidNoteException("Please enter title")
+        }
+        else if (state.content.value.isBlank()){
+            throw InvalidNoteException("Please enter description")
+        }else{
+            onEvent(
+                NoteEvent.SaveNote(
+                    title = state.title.value,
+                    content = state.content.value
+                )
+            )
+            navController.popBackStack()
+        }
+    }catch (e : InvalidNoteException){
+        Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
     }
 
 }

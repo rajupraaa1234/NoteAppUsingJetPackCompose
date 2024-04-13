@@ -2,6 +2,7 @@ package com.example.noteappusingjetpackcompose.notes_features.presentation.compo
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,10 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.noteappusingjetpackcompose.R
 import com.example.noteappusingjetpackcompose.notes_features.presentation.State.NoteState
 import com.example.noteappusingjetpackcompose.notes_features.presentation.utils.NoteEvent
 import com.example.noteappusingjetpackcompose.ui.theme.Pink80
@@ -43,7 +46,6 @@ fun NoteScreen(
     navController: NavController,
     onEvent: (NoteEvent) -> Unit
 ) {
-    val TAG = "NoteScreen"
     Scaffold(modifier = Modifier.background(Color.White),
         topBar = {
             Row(
@@ -54,12 +56,13 @@ fun NoteScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Notes App",
+                    text = stringResource(id = R.string.appName),
                     modifier = Modifier.weight(1f),
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White
                 )
-                IconButton(onClick = { onEvent(NoteEvent.SortNotes) }) {
+                IconButton(onClick = { onEvent(NoteEvent.SortNotes) }, modifier = Modifier
+                    .clickable { onEvent(NoteEvent.SortNotes) }) {
                     Icon(
                         imageVector = Icons.Rounded.Menu,
                         contentDescription = null,
@@ -90,7 +93,6 @@ fun NoteScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Log.d(TAG, "NoteScreen: ${state.notes.size} ")
             items(state.notes.size) {
                 NoteItem(
                     state = state,
@@ -101,20 +103,6 @@ fun NoteScreen(
         }
     }
 
-}
-
-@Composable
-fun SmallExample(state: NoteState) {
-    SmallFloatingActionButton(
-        onClick = {
-            state.title.value = ""
-            state.content.value = ""
-        },
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        contentColor = MaterialTheme.colorScheme.secondary
-    ) {
-        Icon(Icons.Filled.Add, "Small floating action button.")
-    }
 }
 
 @Composable
@@ -147,6 +135,7 @@ fun NoteItem(state: NoteState, index: Int, onEvent: (NoteEvent) -> Unit) {
             imageVector = Icons.Rounded.Delete,
             contentDescription = null,
             modifier = Modifier.size(35.dp)
+                .clickable { onEvent(NoteEvent.DeleteNote(state.notes.get(index))) }
         )
     }
 }

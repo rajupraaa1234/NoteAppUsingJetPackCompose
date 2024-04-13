@@ -18,7 +18,6 @@ class NoteViewModel @Inject constructor(
     private val dao: NoteDao
 ) : ViewModel() {
 
-    private val TAG : String = "NoteViewModel"
     private val _state = mutableStateOf(NoteState())
     val state: State<NoteState>
         get() = _state
@@ -29,27 +28,26 @@ class NoteViewModel @Inject constructor(
         fetchData()
     }
 
-    fun onEvent(noteEvent: NoteEvent){
+
+    fun onEvent(noteEvent: NoteEvent) {
         when (noteEvent) {
             is NoteEvent.SaveNote -> {
-
                 val note = Note(
                     title = _state.value.title.value,
                     content = _state.value.content.value,
                     dataAdded = System.currentTimeMillis()
                 )
-                Log.d(TAG, "onEvent: coming ${note}")
                 viewModelScope.launch {
                     dao.upsertNote(note = note)
                 }
                 _state.value = _state.value.copy(
-                    title = mutableStateOf(""),
-                    content = mutableStateOf("")
+                    title = mutableStateOf(""), content = mutableStateOf("")
                 )
             }
 
             is NoteEvent.SortNotes -> {
                 isSortedByDateAdded.value = !isSortedByDateAdded.value
+                fetchData()
             }
 
             is NoteEvent.DeleteNote -> {
@@ -61,7 +59,6 @@ class NoteViewModel @Inject constructor(
     }
 
     private fun fetchData() {
-        Log.d(TAG, "fetchData note: called")
         viewModelScope.launch {
             var noteData = dao.getOrderedByDateAddedBy()
             if (!isSortedByDateAdded.value) {
