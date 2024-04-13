@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("kotlin-kapt")
 
 }
 
@@ -79,5 +80,23 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$roomversion")
     ksp("androidx.room:room-compiler:$roomversion")
 
+    /**
+     * Dragger
+     */
+
+    implementation("com.google.dagger:dagger:2.49")
+    kapt ("com.google.dagger:dagger-compiler:2.48")
+
+
+    // Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:2.6.1")
+
+    /**
+     * Nav controller for JetPack Compose
+     */
+
+    val nav_version = "2.7.7"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 
 }
