@@ -1,7 +1,9 @@
-package com.example.noteappusingjetpackcompose.notes_features.data
+package com.example.noteappusingjetpackcompose.notes_features.data.data_source
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.noteappusingjetpackcompose.notes_features.domain.model.Note
+
 @Database(
     entities = [Note::class],
     version = 1

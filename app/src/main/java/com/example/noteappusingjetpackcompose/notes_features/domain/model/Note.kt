@@ -1,4 +1,4 @@
-package com.example.noteappusingjetpackcompose.notes_features.data
+package com.example.noteappusingjetpackcompose.notes_features.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

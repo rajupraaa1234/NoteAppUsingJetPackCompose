@@ -4,6 +4,9 @@ plugins {
     id("com.google.devtools.ksp")
     id("kotlin-kapt")
 
+//    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
+
 }
 
 android {
@@ -98,5 +101,13 @@ dependencies {
     val nav_version = "2.7.7"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+
+    /**
+     * Hilt Dependency
+     */
+
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
 
 }

@@ -2,8 +2,7 @@ package com.example.noteappusingjetpackcompose.notes_features.presentation.State
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.example.noteappusingjetpackcompose.notes_features.data.Note
-import kotlinx.coroutines.flow.Flow
+import com.example.noteappusingjetpackcompose.notes_features.domain.model.Note
 
 
 data class NoteState(

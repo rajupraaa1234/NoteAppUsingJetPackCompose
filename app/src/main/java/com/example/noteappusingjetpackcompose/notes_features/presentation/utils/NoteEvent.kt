@@ -1,7 +1,6 @@
 package com.example.noteappusingjetpackcompose.notes_features.presentation.utils
 
-import android.icu.text.CaseMap.Title
-import com.example.noteappusingjetpackcompose.notes_features.data.Note
+import com.example.noteappusingjetpackcompose.notes_features.domain.model.Note
 
 sealed interface NoteEvent {
     object SortNotes : NoteEvent

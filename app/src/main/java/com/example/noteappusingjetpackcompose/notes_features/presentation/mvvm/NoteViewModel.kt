@@ -1,21 +1,22 @@
 package com.example.noteappusingjetpackcompose.notes_features.presentation.mvvm
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.noteappusingjetpackcompose.notes_features.data.Note
-import com.example.noteappusingjetpackcompose.notes_features.data.NoteDao
+import com.example.noteappusingjetpackcompose.notes_features.domain.model.Note
+import com.example.noteappusingjetpackcompose.notes_features.data.data_source.NoteDao
+import com.example.noteappusingjetpackcompose.notes_features.domain.repository.NoteRepository
 import com.example.noteappusingjetpackcompose.notes_features.presentation.State.NoteState
 import com.example.noteappusingjetpackcompose.notes_features.presentation.utils.NoteEvent
-import kotlinx.coroutines.flow.collect
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+@HiltViewModel
 class NoteViewModel @Inject constructor(
-    private val dao: NoteDao
+    private val noteRepository: NoteRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(NoteState())
@@ -38,7 +39,7 @@ class NoteViewModel @Inject constructor(
                     dataAdded = System.currentTimeMillis()
                 )
                 viewModelScope.launch {
-                    dao.upsertNote(note = note)
+                    noteRepository.upsertNote(note = note)
                 }
                 _state.value = _state.value.copy(
                     title = mutableStateOf(""), content = mutableStateOf("")
@@ -52,7 +53,7 @@ class NoteViewModel @Inject constructor(
 
             is NoteEvent.DeleteNote -> {
                 viewModelScope.launch {
-                    dao.deleteNote(note = noteEvent.note)
+                    noteRepository.deleteNote(note = noteEvent.note)
                 }
             }
         }
@@ -60,9 +61,9 @@ class NoteViewModel @Inject constructor(
 
     private fun fetchData() {
         viewModelScope.launch {
-            var noteData = dao.getOrderedByDateAddedBy()
+            var noteData = noteRepository.getOrderedByDateAddedBy()
             if (!isSortedByDateAdded.value) {
-                noteData = dao.getOrderedByTitle()
+                noteData = noteRepository.getOrderedByTitle()
             }
             noteData.collect { notes ->
                 _state.value = _state.value.copy(
