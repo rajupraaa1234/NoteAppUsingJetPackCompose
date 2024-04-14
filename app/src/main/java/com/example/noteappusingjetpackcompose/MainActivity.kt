@@ -11,11 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.noteappusingjetpackcompose.notes_features.presentation.composable.AddNoteScreen
-import com.example.noteappusingjetpackcompose.notes_features.presentation.composable.NoteScreen
+import com.example.noteappusingjetpackcompose.notes_features.presentation.Navigation.ComposeNavigation
 import com.example.noteappusingjetpackcompose.notes_features.presentation.mvvm.NoteViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,26 +24,7 @@ class MainActivity : ComponentActivity() {
         val viewModel: NoteViewModel by viewModels()
         setContent {
             Scaffold(modifier = Modifier.fillMaxSize()) {
-                val state by viewModel.state
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "NoteScreen") {
-                    composable("NoteScreen") {
-                        NoteScreen(
-                            state = state,
-                            navController = navController,
-                            onEvent = viewModel::onEvent
-                        )
-                    }
-                    composable("AddNoteScreen") {
-                        AddNoteScreen(
-                            state = state,
-                            navController = navController,
-                            onEvent = viewModel::onEvent,
-                            context = applicationContext
-                        )
-                    }
-                }
-
+                ComposeNavigation(viewModel, applicationContext)
             }
         }
     }
